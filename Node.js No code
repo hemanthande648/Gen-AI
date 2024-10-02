@@ -1,0 +1,48 @@
+const express = require('express');  
+const { Transformers } = require('transformers');  
+const { PowerAppsRestApi } = require('power-apps-rest-api');  
+  
+const app = express();  
+  
+// Set up the GenAI model  
+const genAiModel = new Transformers({  
+  model: 'bert-base-uncased',  
+  tokenizer: 'bert-base-uncased',  
+});  
+  
+// Set up the Power Apps REST API client  
+const powerAppsClient = new PowerAppsRestApi({  
+  clientId: 'your-client-id',  
+  clientSecret: 'your-client-secret',  
+  tenantId: 'your-tenant-id',  
+});  
+  
+// Define the API endpoint for generating code snippets  
+app.post('/generate-code', async (req, res) => {  
+  const { technologyStack, codeRequirements } = req.body;  
+  
+  // Use the GenAI model to generate code snippets  
+  const codeSnippets = await genAiModel.generateCodeSnippets(technologyStack, codeRequirements);  
+  
+  // Create a new Power Apps app  
+  const appName = `GenAI-Generated-App-${Date.now()}`;  
+  const appResponse = await powerAppsClient.createApp(appName);  
+  
+  // Add the generated code snippets to the Power Apps app  
+  const appId = appResponse.id;  
+  const codeSnippetResponses = await Promise.all(codeSnippets.map((snippet) => {  
+   return powerAppsClient.addCodeSnippet(appId, snippet);  
+  }));  
+  
+  // Return the generated code snippets and Power Apps app ID  
+  res.json({  
+   codeSnippets,  
+   appId,  
+  });  
+});  
+  
+// Start the API server  
+const port = 3000;  
+app.listen(port, () => {  
+  console.log(`API server listening on port ${port}`);  
+});
