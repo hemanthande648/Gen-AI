@@ -1,0 +1,15 @@
+{  
+  "codeSnippets": [  
+   {  
+    "type": "component",  
+    "name": "HelloWorld",  
+    "code": "import React from 'react';\n\nconst HelloWorld = ({ name }) => {\n  return <div>Hello, {name}!</div>;\n};\n\nexport default HelloWorld;"  
+   },  
+   {  
+    "type": "function",  
+    "name": "addNumbers",  
+    "code": "const addNumbers = (a, b) => {\n  return a + b;\n};\n\nexport default addNumbers;"  
+   }  
+  ],  
+  "appId": "1234567890abcdef"  
+}
